@@ -57,7 +57,7 @@ int ren_cause_damage(descriptor dxr) {
                                 0, ({ "ring", 0 }), "on impact.",
                         }),
                 ]));
-        return round((Attack_Query(dxr, Attack_Damage_Rating) + Attack_Query(dxr, Attack_Rating)) * (-1.5 + how_much_head * 2));
+        return round((Attack_Query(dxr, Attack_Damage_Rating) + Attack_Query(dxr, Attack_Rating)) * (-1.4 + how_much_head * 2));
 }
 
 void configure() {

@@ -38,7 +38,7 @@ void hestjeger_horse_hate() {
         return;
     }
     while(loop < (size)) {
-        if(nearby[loop]->race()->query_race_category("equine")) {
+        if(nearby[loop]->race()->query_race_category("equine") && nearby[loop]->is_incarnos() == 0 && nearby[loop]->query_incarnos_control() == 0 && nearby[loop]->query_owner()->is_incarnos() == 0) {
             if(time() > time){
                 time = time() + 5;
                 user->display(([
@@ -49,6 +49,17 @@ void hestjeger_horse_hate() {
                 ]));
             }
             user->add_attacker(nearby[loop]);
+        }
+        if(nearby[loop]->race()->query_race_category("equine")){
+            if(time() > time){
+                time = time() + 5;
+                environment()->message(([
+                    Message_Content                             : ({
+                        ({ 's', 0, this_object() }), ({"sizzle",this_object()}),"with rage.",
+                    }),
+                    Message_Color                               : "shimmering red",
+                ]));
+            }
         }
         //user->display(({"{{green}object number",numerical(loop),"is",nearby[loop],".}"}));
         //user->display(({"{{green}time span is",numerical(time-time()),".}"}));
@@ -69,7 +80,7 @@ void axe_do_equip(mapping args) {
     ]));
     skill_mod = args["who"]->add_skill_modifier(([
         Modifier_Index  : Skill_Axe,
-        Modifier_Amount : 160,
+        Modifier_Amount : 80,
     ]));
     user->display(([
         Message_Content         : ({
@@ -98,7 +109,7 @@ void axe_do_unequip(mapping args) {
     ]));
     args["who"]->display(([
         Message_Content         : ({
-            0, ({"feel",0}), "weaker and less knowledgeable."
+            0, ({"feel",0}), "weaker and less skilled."
         }),
         Message_Color           : "dark gray",
     ]));
@@ -118,8 +129,8 @@ descriptor ruby(string color) {
 
 void hestjeger_jet() {
     charge = charge - 20.00;
-	object who = user;
-	unless(who)
+	
+	unless(user)
 		return;
 	object target = user->query_attacker();
 	unless(target)
@@ -137,14 +148,13 @@ void hestjeger_jet() {
         ]),
         Special_Attack_Flags        : Special_Attack_Flag_Always_Display,
     ]));
-	Special_Attack_Execute(spec, who, target);
-	Special_Attack_Flag_On(spec, Special_Attack_Flag_Definite_Article);
+	Special_Attack_Execute(spec, user, target);
 }
 
 void hestjeger_shockwave() {
-	object who = user;
+	
     descriptor ruby = ruby("bright red");
-	unless(who)
+	unless(user)
 		return;
 	object target = user->query_attacker();
 	unless(target)
@@ -161,15 +171,14 @@ void hestjeger_shockwave() {
         ]),
         Special_Attack_Flags        : Special_Attack_Flag_Always_Display,
     ]));
-	Special_Attack_Execute(spec, who, target);
-	Special_Attack_Flag_On(spec, Special_Attack_Flag_Definite_Article);
+	Special_Attack_Execute(spec, user, target);
 }
 
 void hestjeger_overcharge() {
-    charge = 250.00;
-	object who = user;
+    charge = 100.00;
+	
     descriptor ruby = ruby("bright red");
-	unless(who)
+	unless(user)
 		return;
 	object target = user->query_attacker();
 	unless(target)
@@ -185,13 +194,11 @@ void hestjeger_overcharge() {
         Special_Attack_Flags        : Special_Attack_Pass_Flag_Untreatable,
         Special_Attack_Flags        : Special_Attack_Flag_Always_Display,
     ]));
-	Special_Attack_Execute(spec, who, target);
-	Special_Attack_Flag_On(spec, Special_Attack_Flag_Definite_Article);
+	Special_Attack_Execute(spec, user, target);
 }
 
 int axe_hit(mapping args) {
     descriptor ruby = ruby("bright red");
-    object user = query_user();
     object target = args["target"];
     object hestjeger = this_object();
     if(!user || !target || args["deflecting"] || args["ranged"])
